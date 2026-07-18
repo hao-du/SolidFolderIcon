@@ -1,0 +1,16 @@
+[$RootKey$\Packages\{c9c5f0b2-0ca6-4a0b-8f19-2e7d32a6a14f}]
+@="SolidFolderIconPackage"
+"InprocServer32"="$WinDir$\SYSTEM32\MSCOREE.DLL"
+"Class"="SolidFolderIcon.FolderIconPackage"
+"CodeBase"="$PackageFolder$\SolidFolderIcon.dll"
+"AllowsBackgroundLoad"=dword:00000001
+
+[$RootKey$\AutoLoadPackages\{f1536ef8-92ec-443c-9ed7-fdadf150da82}]
+"{c9c5f0b2-0ca6-4a0b-8f19-2e7d32a6a14f}"=dword:00000002
+
+[$RootKey$\RuntimeConfiguration\dependentAssembly\codeBase\{c9c5f0b2-0ca6-4a0b-8f19-2e7d32a6a14f}]
+"name"="SolidFolderIcon"
+"publicKeyToken"=""
+"culture"="neutral"
+"version"="1.1.22.0"
+"codeBase"="$PackageFolder$\SolidFolderIcon.dll"

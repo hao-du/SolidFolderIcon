@@ -47,6 +47,11 @@ CodeCoverage/
 # MSBuild Binary and Structured Log
 *.binlog
 
+# VSIX packaging outputs
+*.vsix
+extension.vsixmanifest
+merged.source.extension.vsixmanifest
+
 # MSTest test Results
 [Tt]est[Rr]esult*/
 [Bb]uild[Ll]og.*
