@@ -1,30 +1,29 @@
 # Solid Folder Icon
 
-This is a starter CPS extension that swaps folder nodes in Solution Explorer to a solid custom folder icon.
+Tired of the default hollow folder icons in Visual Studio being hard to see? Solid Folder Icon replaces them with clear, solid folder icons in Solution Explorer, making project folders easier to spot and your workspace more comfortable to navigate.
 
-## What it does
+## What It Is
 
-- Uses `IProjectTreePropertiesProvider` to customize tree node icons.
-- Uses SVG folder glyphs inspired by the `assets/icons` structure from the reference project:
-  - `Images/SolidFolderClosed.svg`
-  - `Images/SolidFolderOpen.svg`
-- Packs the assembly as a VSIX MEF component.
+Solid Folder Icon is a lightweight Visual Studio extension for SDK-style projects. It changes folder nodes in Solution Explorer from the default hollow style to a solid folder icon.
 
-## What to know
+It is designed for developers who prefer stronger visual contrast and a more readable project tree, especially in larger solutions with many nested folders.
 
-- This is intentionally scoped to CPS-style projects.
-- The folder detection is conservative and heuristic-based so the sample stays safe.
-- The provider is ordered late so it can win over other CPS icon customizations.
+## Setup
 
-## Build notes
+### Install From Visual Studio Marketplace
 
-- Target framework: `.NET Framework 4.8`
-- Uses:
-  - `Microsoft.VisualStudio.Sdk`
-  - `Microsoft.VSSDK.BuildTools`
+1. Open Visual Studio.
+2. Go to `Extensions` > `Manage Extensions`.
+3. Search for `Solid Folder Icon`.
+4. Click `Install`.
+5. Restart Visual Studio when prompted.
 
-If restore fails because a package version moved, update the versions in [`SolidFolderIcon.csproj`](./SolidFolderIcon.csproj) to the latest available NuGet versions.
+### Install From VSIX
 
-## Next step
+1. Download `SolidFolderIcon.vsix`.
+2. Close Visual Studio.
+3. Double-click the `.vsix` file.
+4. Choose the Visual Studio instance you want to install it into.
+5. Restart Visual Studio.
 
-Open the project in Visual Studio, restore packages, build, and install the generated VSIX into an experimental instance.
+After installation, open an SDK-style project and check Solution Explorer. Folder icons should appear as solid folders.
