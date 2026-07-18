@@ -1,12 +1,12 @@
 # Solid Folder Icon
 
-Tired of the default hollow folder icons in Visual Studio being hard to see? Solid Folder Icon replaces them with clear, solid folder icons in Solution Explorer, making project folders easier to spot and your workspace more comfortable to navigate.
+Tired of the default hollow folder icons in Visual Studio 2026 being hard to see? Solid Folder Icon gives Solution Explorer a cleaner, stronger look by replacing hollow folders with solid folder icons that are easier to spot at a glance.
 
 ## What It Is
 
-Solid Folder Icon is a lightweight Visual Studio extension for SDK-style projects. It changes folder nodes in Solution Explorer from the default hollow style to a solid folder icon.
+Solid Folder Icon is a lightweight Visual Studio 2026 extension for SDK-style projects. It changes folder nodes in Solution Explorer from the default hollow style to a solid folder icon.
 
-It is designed for developers who prefer stronger visual contrast and a more readable project tree, especially in larger solutions with many nested folders.
+If your project tree feels washed out, crowded, or just a little too hard to scan, this extension is for you. Install it, reopen your solution, and give your folders the visual weight they deserve.
 
 ## Setup
 

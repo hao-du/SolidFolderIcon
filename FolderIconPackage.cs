@@ -7,7 +7,7 @@ using Microsoft.VisualStudio.Shell;
 namespace SolidFolderIcon;
 
 [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
-[InstalledProductRegistration("Solid Folder Icon", "Registers solid folder icons for CPS-style projects.", "1.0")]
+[InstalledProductRegistration("Solid Folder Icon", "Registers solid folder icons for CPS-style projects.", "1.0.1")]
 [ProvideAutoLoad("{f1536ef8-92ec-443c-9ed7-fdadf150da82}", PackageAutoLoadFlags.BackgroundLoad)]
 [Guid(PackageGuidString)]
 internal sealed class FolderIconPackage : AsyncPackage
