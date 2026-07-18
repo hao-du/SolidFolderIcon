@@ -27,3 +27,21 @@ It is designed for developers who prefer stronger visual contrast and a more rea
 5. Restart Visual Studio.
 
 After installation, open an SDK-style project and check Solution Explorer. Folder icons should appear as solid folders.
+
+## Development
+
+To build the extension locally:
+
+1. Clone the repository.
+2. Open `SolidFolderIcon.csproj` in Visual Studio.
+3. Restore NuGet packages.
+4. Build the project in `Release` mode.
+5. The installable VSIX is generated as `SolidFolderIcon.vsix`.
+
+Useful files:
+
+- `FolderIconProvider.cs` controls when folder icons are replaced.
+- `FolderIconImageRegistry.cs` registers the custom folder images with Visual Studio.
+- `Images/SolidFolderClosed.svg` is the closed folder icon.
+- `Images/SolidFolderOpen.svg` is the opened folder icon.
+- `source.extension.vsixmanifest` contains the VSIX metadata.
