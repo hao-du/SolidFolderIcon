@@ -19,10 +19,12 @@
     <NeutralLanguage>en-US</NeutralLanguage>
     <TargetVsixContainer>$(OutputPath)$(TargetName).vsix</TargetVsixContainer>
   </PropertyGroup>
-
   <ItemGroup>
     <Resource Include="Images\**\*.*" />
     <Content Include="Images\SolidFolderClosed.svg">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Images\SolidFolderOpen.svg">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="Images\icon.png">
@@ -34,7 +36,6 @@
       <Visible>false</Visible>
     </Content>
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudio.ProjectSystem.SDK" Version="17.9.380" />
     <PackageReference Include="Microsoft.VisualStudio.ProjectSystem.SDK.Tools" Version="17.9.380">
@@ -59,14 +60,16 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
   </ItemGroup>
-
   <Import Project="$(NuGetPackageRoot)microsoft.vssdk.buildtools\18.5.40034\tools\vssdk\Microsoft.VsSDK.targets"
           Condition="Exists('$(NuGetPackageRoot)microsoft.vssdk.buildtools\18.5.40034\tools\vssdk\Microsoft.VsSDK.targets')" />
-
   <ItemGroup>
     <Reference Include="Microsoft.VisualStudio.Imaging.Interop.14.0.DesignTime">
       <HintPath>$(NuGetPackageRoot)microsoft.visualstudio.imaging.interop.14.0.designtime\17.14.40254\lib\net472\Microsoft.VisualStudio.Imaging.Interop.14.0.DesignTime.dll</HintPath>
       <EmbedInteropTypes>true</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Workspace.VSIntegration.Contracts">
+      <HintPath>C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\OpenFolder\Microsoft.VisualStudio.Workspace.VSIntegration.Contracts.dll</HintPath>
+      <Private>false</Private>
     </Reference>
   </ItemGroup>
 </Project>

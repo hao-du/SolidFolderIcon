@@ -8,4 +8,9 @@ internal static class FolderIconMonikers
     {
         return FolderIconImageRegistry.TryGetIcons(out closedProject, out openProject);
     }
+
+    public static bool TryGetMonikers(out Microsoft.VisualStudio.Imaging.Interop.ImageMoniker closedMoniker, out Microsoft.VisualStudio.Imaging.Interop.ImageMoniker openMoniker)
+    {
+        return FolderIconImageRegistry.TryGetMonikers(out closedMoniker, out openMoniker);
+    }
 }

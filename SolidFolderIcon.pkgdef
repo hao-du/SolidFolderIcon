@@ -8,6 +8,9 @@
 [$RootKey$\AutoLoadPackages\{f1536ef8-92ec-443c-9ed7-fdadf150da82}]
 "{c9c5f0b2-0ca6-4a0b-8f19-2e7d32a6a14f}"=dword:00000002
 
+[$RootKey$\AutoLoadPackages\{4646b819-1ae0-4e79-97f4-8a8176fdd664}]
+"{c9c5f0b2-0ca6-4a0b-8f19-2e7d32a6a14f}"=dword:00000002
+
 [$RootKey$\RuntimeConfiguration\dependentAssembly\codeBase\{c9c5f0b2-0ca6-4a0b-8f19-2e7d32a6a14f}]
 "name"="SolidFolderIcon"
 "publicKeyToken"=""

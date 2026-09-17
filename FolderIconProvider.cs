@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.ProjectSystem;
 namespace SolidFolderIcon;
 
 [Export(typeof(IProjectTreePropertiesProvider))]
-[AppliesTo("AspNetCore")]
+[AppliesTo(ProjectCapabilities.AlwaysApplicable)]
 [Order(int.MaxValue)]
 internal sealed class FolderIconProvider : IProjectTreePropertiesProvider
 {
