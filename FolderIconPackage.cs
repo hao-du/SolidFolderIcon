@@ -9,7 +9,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 namespace SolidFolderIcon;
 
 [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
-[InstalledProductRegistration("Solid Folder Icon", "Registers solid folder icons for Solution Explorer.", "1.0.13")]
+[InstalledProductRegistration("Solid Folder Icon", "Registers solid folder icons for Solution Explorer.", "1.0.14")]
 [ProvideAutoLoad("{f1536ef8-92ec-443c-9ed7-fdadf150da82}", PackageAutoLoadFlags.BackgroundLoad)]
 [ProvideAutoLoad("{4646b819-1ae0-4e79-97f4-8a8176fdd664}", PackageAutoLoadFlags.BackgroundLoad)]
 [Guid(PackageGuidString)]
