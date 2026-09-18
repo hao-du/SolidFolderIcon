@@ -3,7 +3,7 @@
   xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" 
   xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="SolidFolderIcon.9e7ec8e4-8b2d-4f5a-8a77-4f1e5d3df5f8" Version="1.0.6" Language="en-US" Publisher="OpenSaur" />
+    <Identity Id="SolidFolderIcon.9e7ec8e4-8b2d-4f5a-8a77-4f1e5d3df5f8" Version="1.0.13" Language="en-US" Publisher="OpenSaur" />
     <DisplayName>Solid Folder Icon</DisplayName>
     <Description>Replace Visual Studio 2026 hollow folder icons with clearer solid folder icons in Solution Explorer.</Description>
     <MoreInfo>https://learn.microsoft.com/en-us/visualstudio/extensibility/image-service-and-catalog?view=visualstudio</MoreInfo>

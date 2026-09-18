@@ -18,11 +18,17 @@ internal static class FolderIconImageRegistry
     private static bool initialized;
     private static IImageHandle? closedHandle;
     private static IImageHandle? openHandle;
+    private static IImageHandle? solutionClosedHandle;
+    private static IImageHandle? solutionOpenHandle;
     private static BitmapSource? closedBitmapSource;
     private static BitmapSource? openBitmapSource;
+    private static BitmapSource? solutionClosedBitmapSource;
+    private static BitmapSource? solutionOpenBitmapSource;
 
     public static BitmapSource? GetClosedBitmapSource() => closedBitmapSource;
     public static BitmapSource? GetOpenBitmapSource() => openBitmapSource;
+    public static BitmapSource? GetSolutionClosedBitmapSource() => solutionClosedBitmapSource;
+    public static BitmapSource? GetSolutionOpenBitmapSource() => solutionOpenBitmapSource;
 
     public static bool TryGetIcons(out ProjectImageMoniker closedIcon, out ProjectImageMoniker openIcon)
     {
@@ -55,6 +61,23 @@ internal static class FolderIconImageRegistry
         }
     }
 
+    public static bool TryGetSolutionFolderMonikers(out ImageMoniker closedMoniker, out ImageMoniker openMoniker)
+    {
+        lock (SyncRoot)
+        {
+            if (!initialized && !TryInitializeCore())
+            {
+                closedMoniker = default;
+                openMoniker = default;
+                return false;
+            }
+
+            closedMoniker = solutionClosedHandle!.Moniker;
+            openMoniker = solutionOpenHandle!.Moniker;
+            return true;
+        }
+    }
+
     public static bool Initialize()
     {
         lock (SyncRoot)
@@ -78,9 +101,13 @@ internal static class FolderIconImageRegistry
 
         closedBitmapSource = RenderSvgBitmap("Images/SolidFolderClosed.svg");
         openBitmapSource = RenderSvgBitmap("Images/SolidFolderOpen.svg");
+        solutionClosedBitmapSource = RenderSvgBitmap("Images/SolidSolutionFolderClosed.svg");
+        solutionOpenBitmapSource = RenderSvgBitmap("Images/SolidSolutionFolderOpen.svg");
 
         closedHandle = imageLibrary.AddCustomImage(closedBitmapSource, canTheme: false);
         openHandle = imageLibrary.AddCustomImage(openBitmapSource, canTheme: false);
+        solutionClosedHandle = imageLibrary.AddCustomImage(solutionClosedBitmapSource, canTheme: false);
+        solutionOpenHandle = imageLibrary.AddCustomImage(solutionOpenBitmapSource, canTheme: false);
         initialized = true;
         return true;
     }

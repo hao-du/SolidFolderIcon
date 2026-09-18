@@ -44,4 +44,6 @@ Useful files:
 - `FolderIconImageRegistry.cs` registers the custom folder images with Visual Studio.
 - `Images/SolidFolderClosed.svg` is the closed folder icon.
 - `Images/SolidFolderOpen.svg` is the opened folder icon.
+- `Images/SolidSolutionFolderClosed.svg` is the closed solution folder icon.
+- `Images/SolidSolutionFolderOpen.svg` is the opened solution folder icon.
 - `source.extension.vsixmanifest` contains the VSIX metadata.

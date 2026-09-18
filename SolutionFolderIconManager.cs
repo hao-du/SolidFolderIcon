@@ -9,7 +9,8 @@ namespace SolidFolderIcon;
 
 internal sealed class SolutionFolderIconManager : IVsSolutionEvents, IDisposable
 {
-    private static readonly Guid SolutionFolderTypeGuid = new("2152E033-0034-406F-BF46-880F05740FFC");
+    private static readonly Guid SolutionFolderTypeGuid = new("2150E333-8FDC-42A3-9474-1A3956D46DE8");
+    private static readonly Guid VirtualFolderTypeGuid = new("6BB5F8F0-4483-11D3-8BCF-00C04F8EC28C");
 
     private readonly IVsSolution solution;
     private readonly IVsHierarchyItemManager hierarchyItemManager;
@@ -17,9 +18,10 @@ internal sealed class SolutionFolderIconManager : IVsSolutionEvents, IDisposable
     private bool disposed;
 
     // Reflection cached access to Microsoft.VisualStudio.PlatformUI.HierarchyItem
-    private static Type? hierarchyItemType;
     private static FieldInfo? iconMonikerField;
     private static FieldInfo? expandedIconMonikerField;
+    private static PropertyInfo? iconMonikerProperty;
+    private static PropertyInfo? expandedIconMonikerProperty;
     private static MethodInfo? raisePropertyChangedMethod;
     private static bool reflectionInitialized;
 
@@ -52,6 +54,14 @@ internal sealed class SolutionFolderIconManager : IVsSolutionEvents, IDisposable
     {
         ThreadHelper.ThrowIfNotOnUIThread();
 
+        // 1. Scan the solution hierarchy itself, because top-level Solution Folders
+        // are children of the solution root hierarchy (IVsSolution as IVsHierarchy).
+        if (solution is IVsHierarchy solutionHierarchy)
+        {
+            ScanHierarchy(solutionHierarchy, VSConstants.VSITEMID_ROOT);
+        }
+
+        // 2. Enumerate any solution folder projects or nested hierarchies
         var guid = Guid.Empty;
         if (ErrorHandler.Succeeded(solution.GetProjectEnum((uint)__VSENUMPROJFLAGS.EPF_ALLPROJECTS, ref guid, out var enumProjects)))
         {
@@ -129,7 +139,16 @@ internal sealed class SolutionFolderIconManager : IVsSolutionEvents, IDisposable
 
         if (ErrorHandler.Succeeded(hierarchy.GetGuidProperty(itemId, (int)__VSHPROPID.VSHPROPID_TypeGuid, out var typeGuid)))
         {
-            if (typeGuid == SolutionFolderTypeGuid)
+            if (typeGuid == SolutionFolderTypeGuid || typeGuid == VirtualFolderTypeGuid)
+            {
+                return true;
+            }
+        }
+
+        if (itemId != VSConstants.VSITEMID_ROOT &&
+            ErrorHandler.Succeeded(hierarchy.GetGuidProperty(VSConstants.VSITEMID_ROOT, (int)__VSHPROPID.VSHPROPID_TypeGuid, out var rootTypeGuid)))
+        {
+            if (rootTypeGuid == SolutionFolderTypeGuid || rootTypeGuid == VirtualFolderTypeGuid)
             {
                 return true;
             }
@@ -137,7 +156,8 @@ internal sealed class SolutionFolderIconManager : IVsSolutionEvents, IDisposable
 
         if (ErrorHandler.Succeeded(hierarchy.GetProperty(itemId, (int)__VSHPROPID.VSHPROPID_TypeName, out var typeNameObj)) && typeNameObj is string typeName)
         {
-            if (typeName.IndexOf("Solution Folder", StringComparison.OrdinalIgnoreCase) >= 0)
+            if (typeName.IndexOf("Solution Folder", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                typeName.IndexOf("Folder", StringComparison.OrdinalIgnoreCase) >= 0)
             {
                 return true;
             }
@@ -153,10 +173,47 @@ internal sealed class SolutionFolderIconManager : IVsSolutionEvents, IDisposable
 
         try
         {
-            hierarchyItemType = hierarchyItem.GetType();
-            iconMonikerField = hierarchyItemType.GetField("_iconMoniker", BindingFlags.NonPublic | BindingFlags.Instance);
-            expandedIconMonikerField = hierarchyItemType.GetField("_expandedIconMoniker", BindingFlags.NonPublic | BindingFlags.Instance);
-            raisePropertyChangedMethod = hierarchyItemType.GetMethod("RaisePropertyChanged", BindingFlags.NonPublic | BindingFlags.Instance);
+            var type = hierarchyItem.GetType();
+            while (type != null && type != typeof(object))
+            {
+                if (iconMonikerField == null)
+                {
+                    iconMonikerField = type.GetField("_iconMoniker", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public)
+                                       ?? type.GetField("iconMoniker", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
+                }
+
+                if (expandedIconMonikerField == null)
+                {
+                    expandedIconMonikerField = type.GetField("_expandedIconMoniker", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public)
+                                               ?? type.GetField("expandedIconMoniker", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
+                }
+
+                if (iconMonikerProperty == null)
+                {
+                    var prop = type.GetProperty("IconMoniker", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                    if (prop?.CanWrite == true)
+                    {
+                        iconMonikerProperty = prop;
+                    }
+                }
+
+                if (expandedIconMonikerProperty == null)
+                {
+                    var prop = type.GetProperty("ExpandedIconMoniker", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                    if (prop?.CanWrite == true)
+                    {
+                        expandedIconMonikerProperty = prop;
+                    }
+                }
+
+                if (raisePropertyChangedMethod == null)
+                {
+                    raisePropertyChangedMethod = type.GetMethod("RaisePropertyChanged", BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance)
+                                                 ?? type.GetMethod("OnPropertyChanged", BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
+                }
+
+                type = type.BaseType;
+            }
         }
         catch
         {
@@ -172,15 +229,24 @@ internal sealed class SolutionFolderIconManager : IVsSolutionEvents, IDisposable
             return;
         }
 
-        var hier = item.HierarchyIdentity.NestedHierarchy ?? item.HierarchyIdentity.Hierarchy;
-        var itemId = item.HierarchyIdentity.IsNestedItem ? item.HierarchyIdentity.NestedItemID : item.HierarchyIdentity.ItemID;
+        var identity = item.HierarchyIdentity;
+        bool isFolder = false;
 
-        if (hier == null || !IsSolutionFolder(hier, itemId))
+        if (identity.NestedHierarchy != null && IsSolutionFolder(identity.NestedHierarchy, identity.NestedItemID))
+        {
+            isFolder = true;
+        }
+        else if (identity.Hierarchy != null && IsSolutionFolder(identity.Hierarchy, identity.ItemID))
+        {
+            isFolder = true;
+        }
+
+        if (!isFolder)
         {
             return;
         }
 
-        if (!FolderIconMonikers.TryGetMonikers(out var closedMoniker, out var openMoniker))
+        if (!FolderIconMonikers.TryGetSolutionFolderMonikers(out var closedMoniker, out var openMoniker))
         {
             return;
         }
@@ -189,25 +255,50 @@ internal sealed class SolutionFolderIconManager : IVsSolutionEvents, IDisposable
 
         try
         {
-            if (iconMonikerField != null && expandedIconMonikerField != null)
+            bool changed = false;
+
+            if (iconMonikerField != null)
             {
                 var currentIcon = (ImageMoniker)iconMonikerField.GetValue(item);
-                var currentExpanded = (ImageMoniker)expandedIconMonikerField.GetValue(item);
-
-                bool changed = false;
                 if (currentIcon.Guid != closedMoniker.Guid || currentIcon.Id != closedMoniker.Id)
                 {
                     iconMonikerField.SetValue(item, closedMoniker);
                     changed = true;
                 }
+            }
+            else if (iconMonikerProperty != null)
+            {
+                var currentIcon = (ImageMoniker)iconMonikerProperty.GetValue(item);
+                if (currentIcon.Guid != closedMoniker.Guid || currentIcon.Id != closedMoniker.Id)
+                {
+                    iconMonikerProperty.SetValue(item, closedMoniker);
+                    changed = true;
+                }
+            }
 
+            if (expandedIconMonikerField != null)
+            {
+                var currentExpanded = (ImageMoniker)expandedIconMonikerField.GetValue(item);
                 if (currentExpanded.Guid != openMoniker.Guid || currentExpanded.Id != openMoniker.Id)
                 {
                     expandedIconMonikerField.SetValue(item, openMoniker);
                     changed = true;
                 }
+            }
+            else if (expandedIconMonikerProperty != null)
+            {
+                var currentExpanded = (ImageMoniker)expandedIconMonikerProperty.GetValue(item);
+                if (currentExpanded.Guid != openMoniker.Guid || currentExpanded.Id != openMoniker.Id)
+                {
+                    expandedIconMonikerProperty.SetValue(item, openMoniker);
+                    changed = true;
+                }
+            }
 
-                if (changed && raisePropertyChangedMethod != null)
+            if (changed && raisePropertyChangedMethod != null)
+            {
+                var parameters = raisePropertyChangedMethod.GetParameters();
+                if (parameters.Length == 1 && parameters[0].ParameterType == typeof(string))
                 {
                     raisePropertyChangedMethod.Invoke(item, new object[] { "IconMoniker" });
                     raisePropertyChangedMethod.Invoke(item, new object[] { "ExpandedIconMoniker" });

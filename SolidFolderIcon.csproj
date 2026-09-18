@@ -5,7 +5,10 @@
     <AssemblyName>SolidFolderIcon</AssemblyName>
     <TargetName>SolidFolderIcon</TargetName>
     <LangVersion>latest</LangVersion>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <Version>1.0.13</Version>
+    <AssemblyVersion>1.0.13.0</AssemblyVersion>
+    <FileVersion>1.0.13.0</FileVersion>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
     <IncludeBuildOutput>true</IncludeBuildOutput>
@@ -25,6 +28,12 @@
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="Images\SolidFolderOpen.svg">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Images\SolidSolutionFolderClosed.svg">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Images\SolidSolutionFolderOpen.svg">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="Images\icon.png">

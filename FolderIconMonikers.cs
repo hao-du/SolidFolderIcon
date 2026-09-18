@@ -13,4 +13,9 @@ internal static class FolderIconMonikers
     {
         return FolderIconImageRegistry.TryGetMonikers(out closedMoniker, out openMoniker);
     }
+
+    public static bool TryGetSolutionFolderMonikers(out Microsoft.VisualStudio.Imaging.Interop.ImageMoniker closedMoniker, out Microsoft.VisualStudio.Imaging.Interop.ImageMoniker openMoniker)
+    {
+        return FolderIconImageRegistry.TryGetSolutionFolderMonikers(out closedMoniker, out openMoniker);
+    }
 }
